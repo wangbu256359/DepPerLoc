@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css"><link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <style>
+        #map {
+            width: 1474px;
+            height: 778px;
+        }
+        </style>
+        <title>DepPerLoc</title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script><script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="data/activestatus_1.js"></script>
+        <script>
+        var highlightLayer;
+        function highlightFeature(e) {
+            highlightLayer = e.target;
+            highlightLayer.openPopup();
+        }
+        var map = L.map('map', {
+            zoomControl:true, maxZoom:28, minZoom:1
+        }).fitBounds([[6.149208377777776,125.12046531828523],[6.152249023211286,125.12623314055085]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_Positronnolabelsretina_0');
+        map.getPane('pane_Positronnolabelsretina_0').style.zIndex = 400;
+        var layer_Positronnolabelsretina_0 = L.tileLayer('https://a.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}@2x.png', {
+            pane: 'pane_Positronnolabelsretina_0',
+            opacity: 1.0,
+            attribution: '<a href="https://cartodb.com/basemaps/">Map tiles by CartoDB, under CC BY 3.0. Data by OpenStreetMap, under ODbL.</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 20
+        });
+        layer_Positronnolabelsretina_0;
+        map.addLayer(layer_Positronnolabelsretina_0);
+        function pop_activestatus_1(feature, layer) {
+            layer.on({
+                mouseout: function(e) {
+                    if (typeof layer.closePopup == 'function') {
+                        layer.closePopup();
+                    } else {
+                        layer.eachLayer(function(feature){
+                            feature.closePopup()
+                        });
+                    }
+                },
+                mouseover: highlightFeature,
+            });
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['start'] !== null ? autolinker.link(feature.properties['start'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['end'] !== null ? autolinker.link(feature.properties['end'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['today'] !== null ? autolinker.link(feature.properties['today'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['username'] !== null ? autolinker.link(feature.properties['username'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['deviceid'] !== null ? autolinker.link(feature.properties['deviceid'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['phonenumber'] !== null ? autolinker.link(feature.properties['phonenumber'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PROVINCE_or_CITY'] !== null ? autolinker.link(feature.properties['PROVINCE_or_CITY'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['MPS_or_CPS'] !== null ? autolinker.link(feature.properties['MPS_or_CPS'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Activity'] !== null ? autolinker.link(feature.properties['Activity'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TIME IN'] !== null ? autolinker.link(feature.properties['TIME IN'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TIME OUT'] !== null ? autolinker.link(feature.properties['TIME OUT'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PERSONNEL AND CONTACT NUMBER'] !== null ? autolinker.link(feature.properties['PERSONNEL AND CONTACT NUMBER'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PICTURE 1'] !== null ? autolinker.link(feature.properties['PICTURE 1'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PICTURE 1_URL'] !== null ? autolinker.link(feature.properties['PICTURE 1_URL'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PICTURE 2'] !== null ? autolinker.link(feature.properties['PICTURE 2'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['PICTURE 2_URL'] !== null ? autolinker.link(feature.properties['PICTURE 2_URL'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Record your current location'] !== null ? autolinker.link(feature.properties['Record your current location'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['_Record your current location_longitude'] !== null ? autolinker.link(feature.properties['_Record your current location_longitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['_Record your current location_latitude'] !== null ? autolinker.link(feature.properties['_Record your current location_latitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['_Record your current location_altitude'] !== null ? autolinker.link(feature.properties['_Record your current location_altitude'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['_Record your current location_precision'] !== null ? autolinker.link(feature.properties['_Record your current location_precision'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['DATE'] !== null ? autolinker.link(feature.properties['DATE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['_id'] !== null ? autolinker.link(feature.properties['_id'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['_uuid'] !== null ? autolinker.link(feature.properties['_uuid'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['_submission_time'] !== null ? autolinker.link(feature.properties['_submission_time'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['_validation_status'] !== null ? autolinker.link(feature.properties['_validation_status'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['_notes'] !== null ? autolinker.link(feature.properties['_notes'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['_status'] !== null ? autolinker.link(feature.properties['_status'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['_submitted_by'] !== null ? autolinker.link(feature.properties['_submitted_by'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['__version__'] !== null ? autolinker.link(feature.properties['__version__'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['_tags'] !== null ? autolinker.link(feature.properties['_tags'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['_index'] !== null ? autolinker.link(feature.properties['_index'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ID'] !== null ? autolinker.link(feature.properties['ID'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['rank'] !== null ? autolinker.link(feature.properties['rank'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['LAST NAME'] !== null ? autolinker.link(feature.properties['LAST NAME'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['FIRST NAME'] !== null ? autolinker.link(feature.properties['FIRST NAME'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['MIDDLE NAME'] !== null ? autolinker.link(feature.properties['MIDDLE NAME'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['QLFR'] !== null ? autolinker.link(feature.properties['QLFR'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['badge'] !== null ? autolinker.link(feature.properties['badge'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['position'] !== null ? autolinker.link(feature.properties['position'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['date_position'] !== null ? autolinker.link(feature.properties['date_position'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['date_position1'] !== null ? autolinker.link(feature.properties['date_position1'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['so'] !== null ? autolinker.link(feature.properties['so'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['course'] !== null ? autolinker.link(feature.properties['course'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['exam'] !== null ? autolinker.link(feature.properties['exam'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['schooling'] !== null ? autolinker.link(feature.properties['schooling'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['date_enter'] !== null ? autolinker.link(feature.properties['date_enter'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['number'] !== null ? autolinker.link(feature.properties['number'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['status_gender'] !== null ? autolinker.link(feature.properties['status_gender'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['religion'] !== null ? autolinker.link(feature.properties['religion'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['birthday'] !== null ? autolinker.link(feature.properties['birthday'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['dealic'] !== null ? autolinker.link(feature.properties['dealic'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['address'] !== null ? autolinker.link(feature.properties['address'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['field_54'] !== null ? autolinker.link(feature.properties['field_54'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['field_55'] !== null ? autolinker.link(feature.properties['field_55'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['field_56'] !== null ? autolinker.link(feature.properties['field_56'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['field_57'] !== null ? autolinker.link(feature.properties['field_57'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['field_58'] !== null ? autolinker.link(feature.properties['field_58'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['field_59'] !== null ? autolinker.link(feature.properties['field_59'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['field_60'] !== null ? autolinker.link(feature.properties['field_60'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['field_61'] !== null ? autolinker.link(feature.properties['field_61'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['field_62'] !== null ? autolinker.link(feature.properties['field_62'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_activestatus_1_0(feature) {
+            switch(String(feature.properties['Activity'])) {
+                default:
+                    return {
+                pane: 'pane_activestatus_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(236,57,33,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'AREA SECURITY ':
+                    return {
+                pane: 'pane_activestatus_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(81,98,227,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'BEAT PARTROL':
+                    return {
+                pane: 'pane_activestatus_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(134,220,73,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'DUTY OFFICE':
+                    return {
+                pane: 'pane_activestatus_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(79,172,144,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'FILING OF CRIMINAL COMPLAINT':
+                    return {
+                pane: 'pane_activestatus_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(219,119,106,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'OFF DUTY':
+                    return {
+                pane: 'pane_activestatus_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(152,137,39,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'ON SCHOOLING':
+                    return {
+                pane: 'pane_activestatus_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(152,57,253,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'POLICE BOX':
+                    return {
+                pane: 'pane_activestatus_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(198,78,140,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'SERVING SUBPOENA AND WARRANT OF ARREST':
+                    return {
+                pane: 'pane_activestatus_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(92,59,163,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'STANDBY ALERT TEAM':
+                    return {
+                pane: 'pane_activestatus_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(102,254,160,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'STATIC CHECKPOINT':
+                    return {
+                pane: 'pane_activestatus_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(84,117,208,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'SYNCHRONIZE CHECKPOINT':
+                    return {
+                pane: 'pane_activestatus_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(157,155,33,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'VIP SECURITY':
+                    return {
+                pane: 'pane_activestatus_1',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(156,56,61,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_activestatus_1');
+        map.getPane('pane_activestatus_1').style.zIndex = 401;
+        map.getPane('pane_activestatus_1').style['mix-blend-mode'] = 'normal';
+        var layer_activestatus_1 = new L.geoJson(json_activestatus_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_activestatus_1',
+            layerName: 'layer_activestatus_1',
+            pane: 'pane_activestatus_1',
+            onEachFeature: pop_activestatus_1,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_activestatus_1_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_activestatus_1);
+        map.addLayer(layer_activestatus_1);
+            var title = new L.Control();
+            title.onAdd = function (map) {
+                this._div = L.DomUtil.create('div', 'info');
+                this.update();
+                return this._div;
+            };
+            title.update = function () {
+                this._div.innerHTML = '<h2>DepPerLoc</h2>';
+            };
+            title.addTo(map);
+            var abstract = new L.Control({'position':'topright'});
+            abstract.onAdd = function (map) {
+                this._div = L.DomUtil.create('div',
+                'leaflet-control abstract');
+                this._div.id = 'abstract'
+
+                    abstract.show();
+                    return this._div;
+                };
+                abstract.show = function () {
+                    this._div.classList.remove("abstract");
+                    this._div.classList.add("abstractUncollapsed");
+                    this._div.innerHTML = 'DepPerLoc';
+            };
+            abstract.addTo(map);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'activestatus<br /><table><tr><td style="text-align: center;"><img src="legend/activestatus_1_0.png" /></td><td></td></tr><tr><td style="text-align: center;"><img src="legend/activestatus_1_AREASECURITY1.png" /></td><td>AREA SECURITY </td></tr><tr><td style="text-align: center;"><img src="legend/activestatus_1_BEATPARTROL2.png" /></td><td>BEAT PARTROL</td></tr><tr><td style="text-align: center;"><img src="legend/activestatus_1_DUTYOFFICE3.png" /></td><td>DUTY OFFICE</td></tr><tr><td style="text-align: center;"><img src="legend/activestatus_1_FILINGOFCRIMINALCOMPLAINT4.png" /></td><td>FILING OF CRIMINAL COMPLAINT</td></tr><tr><td style="text-align: center;"><img src="legend/activestatus_1_OFFDUTY5.png" /></td><td>OFF DUTY</td></tr><tr><td style="text-align: center;"><img src="legend/activestatus_1_ONSCHOOLING6.png" /></td><td>ON SCHOOLING</td></tr><tr><td style="text-align: center;"><img src="legend/activestatus_1_POLICEBOX7.png" /></td><td>POLICE BOX</td></tr><tr><td style="text-align: center;"><img src="legend/activestatus_1_SERVINGSUBPOENAANDWARRANTOFARREST8.png" /></td><td>SERVING SUBPOENA AND WARRANT OF ARREST</td></tr><tr><td style="text-align: center;"><img src="legend/activestatus_1_STANDBYALERTTEAM9.png" /></td><td>STANDBY ALERT TEAM</td></tr><tr><td style="text-align: center;"><img src="legend/activestatus_1_STATICCHECKPOINT10.png" /></td><td>STATIC CHECKPOINT</td></tr><tr><td style="text-align: center;"><img src="legend/activestatus_1_SYNCHRONIZECHECKPOINT11.png" /></td><td>SYNCHRONIZE CHECKPOINT</td></tr><tr><td style="text-align: center;"><img src="legend/activestatus_1_VIPSECURITY12.png" /></td><td>VIP SECURITY</td></tr></table>': layer_activestatus_1,"Positron [no labels] (retina)": layer_Positronnolabelsretina_0,}).addTo(map);
+        setBounds();
+        </script>
+    </body>
+</html>
